@@ -26,7 +26,7 @@ export default class Recipe extends Component {
               to={`/recipes/${recipe_id}`}
               className="btn btn-primary text-capitalize"
             >
-              recipe
+              Recipe Details
             </Link>
             <Link to="/">
               <a
@@ -35,7 +35,7 @@ export default class Recipe extends Component {
                 rel="noopener noreferrer"
                 className="btn btn-success mx-2 text-capitalize"
               >
-                recipe details
+                Recipe
               </a>
             </Link>
           </div>
