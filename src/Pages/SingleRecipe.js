@@ -1,19 +1,36 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { recipeData } from '../data/tempDetails';
+import { getOne } from '../apiUtils';
+
 export default class SingleRecipe extends Component {
   constructor(props) {
     super(props);
-    const { id } = this.props.match.params;
+    const id = this.props.match.params.id;
     this.state = {
-      recipe: recipeData,
+      // recipe: recipeData,
+      recipe: {},
       id,
-      loading: false
+      isLoading: true
     };
   }
+  async componentDidMount() {
+    const url = getOne(this.state.id);
+
+    try {
+      const fetchResponse = await fetch(url);
+      const recipeData = await fetchResponse.json();
+      this.setState({
+        recipe: recipeData.recipe,
+        isLoading: false
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   render() {
     const {
-      loading,
+      isLoading,
       recipe: {
         image_url,
         publisher,
@@ -23,19 +40,13 @@ export default class SingleRecipe extends Component {
         ingredients
       }
     } = this.state;
-
-    if (loading) {
+    if (isLoading) {
       return (
         <div className="container">
           <div className="row">
             <div className="col-10 mx-auto col-md-6 my-3">
               <h2 className="text-uppercase text-orange text-center">
-                LOADING{' '}
-                <span style={{ color: 'teal' }}>
-                  <em>
-                    <b>{title}...</b>
-                  </em>
-                </span>
+                loading recipe....
               </h2>
             </div>
           </div>
@@ -48,17 +59,18 @@ export default class SingleRecipe extends Component {
           <div className="col-10 mx-auto col-md-6 my-3">
             <Link
               to="/recipes"
-              className="btn btn-warning mb-5 text-capitalize"
+              className="btn btn-warning mb-5 text-capatilize"
             >
-              Return to Recipes List
+              return to recipes list
             </Link>
             <img
               src={image_url}
-              alt={title}
               className="d-block w-100"
               style={{ maxHeight: '30rem' }}
+              alt="recipe"
             />
           </div>
+
           <div className="col-10 mx-auto col-md-6 my-3">
             <h6 className="text-uppercase">{title}</h6>
             <h6 className="text-warning text-capitalize text-slanted">
@@ -70,7 +82,7 @@ export default class SingleRecipe extends Component {
               rel="noopener noreferrer"
               className="btn btn-primary mt-2 text-capitalize"
             >
-              Publisher Webpage
+              publisher webpage
             </a>
             <a
               href={source_url}
@@ -78,15 +90,17 @@ export default class SingleRecipe extends Component {
               rel="noopener noreferrer"
               className="btn btn-success mt-2 mx-2 text-capitalize"
             >
-              Recipe URL
+              recipe url
             </a>
             <ul className="list-group mt-4">
               <h2 className="mt-3 mb-4">Ingredients</h2>
-              {ingredients.map((ingredient, idx) => (
-                <li key={idx} className="list-group-item text-slanted">
-                  {ingredient}
-                </li>
-              ))}
+              {ingredients.map((ingredient, index) => {
+                return (
+                  <li key={index} className="list-group-item text-slanted">
+                    {ingredient}
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </div>

@@ -1,14 +1,34 @@
 import React, { Component } from 'react';
+import { getAll } from '../apiUtils';
 import RecipeList from '../Components/RecipeList';
 import Search from '../Components/Search';
-import { recipeData } from '../data/tempList';
+
 export default class Recipes extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      recipes: recipeData,
-      search: ''
-    };
+    this.getRecipes = this.getRecipes.bind(this);
+  }
+  state = {
+    recipes: [],
+    search: ''
+  };
+
+  async getRecipes() {
+    const url = getAll();
+    try {
+      const fetchResponse = await fetch(url);
+      const recipesJson = await fetchResponse.json();
+      const { recipes } = recipesJson;
+      this.setState({
+        recipes
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  componentDidMount() {
+    this.getRecipes();
   }
 
   handleChange = (e) => {
@@ -16,7 +36,6 @@ export default class Recipes extends Component {
       search: e.target.value
     });
   };
-
   handleSubmit = (e) => {
     e.preventDefault();
   };
