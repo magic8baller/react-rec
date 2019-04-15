@@ -3,11 +3,24 @@ import Recipe from './Recipe';
 
 export default class RecipeList extends Component {
   render() {
+    const { recipes } = this.props;
     return (
-      <div>
-        <h2>RECIPE LISZT</h2>
-        <Recipe/>
-      </div>
+      <>
+        <div className="container py-5">
+          {/* {title} */}
+          <div className="row">
+            <div className="col-10 mx-auto col-mid-6 text-center text-uppercase mb-3">
+              <h1 className="text-slanted">Recipes</h1>
+            </div>
+          </div>
+          {/* end of title */}
+          <div className="row">
+            {recipes.map((recipe, idx) => (
+              <Recipe key={recipe.recipe_id} recipe={recipe} />
+            ))}
+          </div>
+        </div>
+      </>
     );
   }
 }
